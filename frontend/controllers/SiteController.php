@@ -11,6 +11,7 @@ use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
+use frontend\models\IndexForm;
 use frontend\models\ContactForm;
 
 /**
@@ -73,9 +74,19 @@ class SiteController extends Controller
     public function actionIndex()
     {
         //return $this->render('index');
+        $model = new IndexForm();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($user = $model->signup()) {
+                if (Yii::$app->getUser()->login($user)) {
+                    return $this->goHome();
+                }
+            }
+        }
+
 
         return $this->render('index', [
             'kodSMS' => rand(1000,9999),
+	    'model' => $model,
         ]);
 
 
