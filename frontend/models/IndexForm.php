@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use Yii;
 use yii\base\Model;
 use common\models\User;
 
@@ -13,6 +14,8 @@ class IndexForm extends Model
     public $password;
     public $codeSMS;
 
+    private $_user;
+
 
     /**
      * @inheritdoc
@@ -21,13 +24,15 @@ class IndexForm extends Model
     {
         return [
             ['username', 'filter', 'filter' => 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
-            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['username', 'required', 'message' => 'Необходимо указать номер телефона'],
+//            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'string', 'min' => 16, 'max' => 16],
 
 
-            ['codeSMS', 'required'],
-            ['codeSMS', 'string', 'min' => 4, 'max' => 4],
+            ['codeSMS', 'required', 'message' => 'Необходимо ввести КОД из СМС'],
+//            ['codeSMS', 'string', 'min' => 4, 'max' => 4],
+            // password is validated by validatePassword()
+            ['codeSMS', 'validateCodeSMS'],
         ];
     }
 
@@ -41,13 +46,89 @@ class IndexForm extends Model
         if (!$this->validate()) {
             return null;
         }
+
+        if ($this->getUser() === null) {
+
+		$this->codeSMS = rand(1000,9999);
+
+                Yii::$app->session->setFlash('error', 'SMS code: ' . $this->codeSMS);
         
-        $user = new User();
-        $user->username = $this->username;
-        $user->codeSMS = $this->codeSMS;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
+            $user = new User();
+            $user->username = $this->username;
+            $user->codeSMS = $this->codeSMS;
+            $user->email = preg_replace("/[^0-9]/", '', $this->username);
+            $user->setPassword($this->codeSMS);
+            $user->generateAuthKey();
         
-        return $user->save() ? $user : null;
+            return $user->save() ? $user : null;
+
+	}  else {
+	
+	        if ($this->validate()) {
+        	    $this->_user = User::findByUsername($this->username);
+                    return $this->_user;
+
+       		  } else {
+	
+            	    return false;
+        	  }
+          }
     }
+
+
+    /**
+     * Validates the codeSMS.
+     * This method serves as the inline validation for password.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validateCodeSMS($attribute, $params)
+    {
+
+        if ($this->codeSMS !== null) {
+
+        if (!$this->hasErrors()) {
+            $user = $this->getUser();
+            if (!$user || !$user->validatePassword($this->codeSMS)) {
+                $this->addError($attribute, 'Веден не правильный код СМС');
+            }
+        }
+      } else {
+
+	}
+
+    }
+
+
+    /**
+     * Logs in a user using the provided username and password.
+     *
+     * @return boolean whether the user is logged in successfully
+     */
+    public function login()
+    {
+        if ($this->validate()) {
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Finds user by [[username]]
+     *
+     * @return User|null
+     */
+    protected function getUser()
+    {
+        if ($this->_user === null) {
+            $this->_user = User::findByUsername($this->username);
+        }
+
+        return $this->_user;
+    }
+
+
+
 }

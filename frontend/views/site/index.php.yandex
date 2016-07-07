@@ -1,0 +1,159 @@
+<?php
+
+/* @var $this yii\web\View */
+/* @var $model \frontend\models\IndexForm */
+
+use yii\widgets\Pjax;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+$script = <<< JS
+jQuery(function($){
+   $("#date").mask("99/99/9999",{placeholder:"mm/dd/yyyy"});
+   $("#phone").mask("+7(999)999-99-99");
+   $("#kod").mask("9999");
+});
+$(document).ready(function(){
+    $("#myModal").click(function(){
+        $("#modal").modal('show');
+    });
+});
+$('#modal-btn').on('click', function() {
+        $('#openModal').modal('show')
+    });
+ymaps.ready(init);
+    var myMap;
+
+    function init(){     
+        myMap = new ymaps.Map("map", {
+            center: [54.71, 20.5],
+            zoom: 12
+        });
+	myMap.controls.add('searchControl');
+    };
+JS;
+//маркер конца строки, обязательно сразу, без пробелов и табуляции
+$this->registerJs($script, yii\web\View::POS_READY);
+
+$this->title = 'GoToWEB';
+?>
+<div class="site-index">
+<div class="col-md-6 login-form">
+
+ <!--
+  <form class="form-2">
+
+
+    <h1><span class="log-in">Войти</span> или <span class="sign-up">зарегистрироваться</span></h1>
+    <p class="float">
+        <label for="login"><i class="icon-user"></i>Телефон</label>
+        <input type="text" id="phone1" placeholder="Номер телефона">
+    </p>
+    <p class="float">
+        <label for="kod"><i class="icon-lock"></i>Код</label>
+        <input type="text" id="kod" placeholder="Код СМС">
+    </p>
+    <p class="clearfix">
+        <a class="log-twitter" id="modal-btn1" href="#openModal">Получить код по СМС</a>   
+        <input type="submit" name="submit" value="Войти">
+    </p>      
+
+
+
+
+  </form>
+  -->
+    <?php    if (!Yii::$app->user->isGuest) { ?>
+
+    <h2><?php echo Yii::$app->user->identity->username; ?>  
+
+	<!-- <a href="#" ><img src="images/exit.png" width="20" title="Выход"> </a>   -->
+
+	  <?php echo Html::beginForm(['/site/logout'], 'post')
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username  . ')',
+                ['class' => 'btn btn-link']
+            )
+            . Html::endForm()
+           ?>
+
+    </h2> 
+
+    <?php  }  ?>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <?php $form = ActiveForm::begin(['id' => 'form-booking', 'options' => ['class' => 'form-2'] ]); ?>
+	        <h1><span class="sign-up">Заказать такси</span></h1>
+
+                <?= $form->field($model, 'username')->textInput(['id' => 'from'])->label('Откуда') ?>
+
+                <?= $form->field($model, 'codeSMS')->textInput(['id' => 'to'])->label('Куда') ?>
+
+                <div class="form-group">
+                    <!-- <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>  --> 
+                </div>
+  		  <p class="clearfix">
+			 <?= Html::a('Получить код по СМС',Url::toRoute(['index']),['class' => 'log-twitter']) ?>
+       			 <!-- <a class="log-twitter" id="modal-btn1" href="#openModal">Получить код по СМС</a>  -->
+       			 <input type="submit" name="Submit" value="Войти">
+   		 </p>      
+
+            <?php ActiveForm::end(); ?>
+
+		<div id="map" style="width: 1100px; height: 400px"></div>        
+
+        </div>
+
+    </div>
+
+
+
+  </div>
+
+  <div class="col-md-6">
+
+
+            <?php $form = ActiveForm::begin(['id' => 'form-signup', 'options' => ['class' => 'form-2'] ]); ?>
+	        <h1><span class="log-in">Войти</span> или <span class="sign-up">зарегистрироваться</span></h1>
+
+                <?= $form->field($model, 'username')->textInput(['id' => 'phone'])->label('Телефон') ?>
+
+                <?= $form->field($model, 'codeSMS')->textInput(['id' => 'kod'])->label('КОД') ?>
+
+                <div class="form-group">
+                    <!-- <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>  --> 
+                </div>
+  		  <p class="clearfix">
+			 <?= Html::a('Получить код по СМС',Url::toRoute(['index']),['class' => 'log-twitter']) ?>
+       			 <!-- <a class="log-twitter" id="modal-btn1" href="#openModal">Получить код по СМС</a>  -->
+       			 <input type="submit" name="Submit" value="Войти">
+   		 </p>      
+
+            <?php ActiveForm::end(); ?>
+
+
+
+  </div>  
+
+
+    <div id="openModal" class="modalDialog">
+	<div>
+		<h2>Ваш код для входа</h2>
+		<Hr>
+
+   		<?php Pjax::begin(); ?>
+		    <?php if (!Yii::$app->user->isGuest) { ?>
+   			<h2><?php echo $model->codeSMS; ?></h2>
+		    <?php }  ?>
+   		<?php Pjax::end(); ?>
+
+		<Hr>
+		<p><a class="btn btn-lg btn-success close1" href="#">OK</a></p>
+	</div>
+    </div>
+
+
+</div>

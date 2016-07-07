@@ -33,6 +33,18 @@ return [
             'class' => 'yii\rbac\DbManager', 
         ],
 
+	'assetManager' => [
+        'bundles' => [
+            'dosamigos\google\maps\MapAsset' => [
+                'options' => [
+                    'key' => 'AIzaSyAr1rxZY8MquNLG9e7YgVokiQAF1x8TZEA',
+                    'language' => 'ru-RU',
+                    'version' => '3.1.18'
+                 ]
+              ]
+           ]
+        ],
+
     ],
 
     'modules' => [

@@ -67,6 +67,15 @@ class SiteController extends Controller
     }
 
     /**
+     * Get SMS Code.
+     *
+     * @return mixed
+     */
+    public function actionGetCodeSMS() {
+        Yii::$app->session->setFlash('success', 'SMS code');
+    }
+
+    /**
      * Displays homepage.
      *
      * @return mixed
@@ -74,21 +83,27 @@ class SiteController extends Controller
     public function actionIndex()
     {
         //return $this->render('index');
+
+
         $model = new IndexForm();
+
+
         if ($model->load(Yii::$app->request->post())) {
+
+        Yii::$app->session->setFlash('success', $model->codeSMS);
+
             if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
-                    return $this->goHome();
-                }
+
+//                if (Yii::$app->getUser()->login($user)) {
+//                    return $this->goHome();
+//		}
             }
         }
 
 
         return $this->render('index', [
-            'kodSMS' => rand(1000,9999),
 	    'model' => $model,
         ]);
-
 
     }
 
@@ -227,14 +242,6 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-
-
-    public function actionGetCodeSMS()
-    {
-        echo '0000';
-        return 0;
-    }
-
 
     public function actionPjaxExample1()
     {
