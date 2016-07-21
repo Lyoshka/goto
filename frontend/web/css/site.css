@@ -345,3 +345,83 @@ a.desc:after {
   z-index: 0; /* Set z-index to 0 as it will be on a layer below the contact form */
 }
  
+header {
+    background: url(../images/bg1.jpg) no-repeat center top fixed;
+    padding-top: 50px;
+    -moz-background-size: 100%;
+    -webkit-background-size: cover;
+            background-size: cover;
+}
+
+header .color-overlay {
+    min-height: 500px;
+}
+.color-overlay {
+    background: rgba(0, 0, 0, 0.4) none repeat scroll 0 0;
+}
+
+.intro {
+    font-size: 3.75rem; 
+    line-height: 4.688rem;
+    text-align: center;
+    color: white;
+    margin-top: 40px;
+}
+
+.white-line {
+    margin: auto;
+    z-index: 1;
+    width: 165px;
+    height: 1px;
+    background: #ffffff;
+}
+.btn-main {
+    text-align: center;
+    margin-top: 60px;
+    
+}
+
+.inputs-main {
+    text-align: center;
+    margin-top: 40px;
+    color: white;
+    font-size: 3.5rem; 
+    line-height: 4.688rem;
+
+}
+
+.standard-button {
+    width: 400px;
+    font-size: 2.5rem; 
+}
+
+.input-main {
+    background: none;
+    outline: none;
+    color: white;
+    font-size: 2.5rem; 
+    margin-top: 20px;
+    
+}
+
+.hi-line {
+    margin-top: 20px;
+
+}                                                                                          
+
+.menu-country {
+    color: white;
+    font-size: 2.5rem; 
+    border: 1px solid rgba(255,255,255,.5);
+    border-radius: 5px 0 0 5px;
+    padding: 5px 10px;
+}
+
+.menu-city {
+    color: white;
+    font-size: 2.5rem; 
+    border: 1px solid rgba(255,255,255,.5);
+    margin-left: -5px;
+    border-radius: 0 5px 5px 0;
+    padding: 5px 10px;
+}

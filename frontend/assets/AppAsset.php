@@ -16,10 +16,11 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/jquery.maskedinput.min.js',
+	'https://maps.googleapis.com/maps/api/js?key=AIzaSyAr1rxZY8MquNLG9e7YgVokiQAF1x8TZEA&signed_in=true&libraries=places&callback=initMap',
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
     ];
-    public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
+    public $jsOptions = ['position' => \yii\web\View::POS_HEAD, 'async'=>'async', 'defer'=>'defer'];
 }

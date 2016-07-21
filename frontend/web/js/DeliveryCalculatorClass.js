@@ -83,7 +83,7 @@ ymaps.modules.define(
              */
             calculate: function (routeLength) {
                 // Константы.
-                var DELIVERY_TARIF = 20, // Стоимость за километр.
+                var DELIVERY_TARIF = 100, // Стоимость за километр.
                     MINIMUM_COST = 500; // Минимальная стоимость.
 
                 return Math.max(routeLength * DELIVERY_TARIF, MINIMUM_COST);
@@ -133,6 +133,7 @@ ymaps.modules.define(
              * Обработчик клика по карте. Получаем координаты точки на карте и создаем маркер.
              * @param  {Object} event Событие.
              */
+/*
             _onClick: function (event) {
                 if (this._startPoint) {
                     this.setFinishPoint(event.get('coords'));
@@ -140,10 +141,11 @@ ymaps.modules.define(
                     this.setStartPoint(event.get('coords'));
                 }
             },
-
+*/
             /**
              * Получаем координаты маркера и вызываем геокодер для начальной точки.
              */
+/*
             _onStartDragEnd: function () {
                 this.geocode('start', this._startPoint.geometry.getCoordinates());
             },
@@ -151,6 +153,9 @@ ymaps.modules.define(
             _onFinishDragEnd: function () {
                 this.geocode('finish', this._finishPoint.geometry.getCoordinates());
             }
+*/
+
+
         });
 
         provide(DeliveryCalculator);

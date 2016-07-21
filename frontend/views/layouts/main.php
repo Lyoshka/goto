@@ -38,13 +38,13 @@ AppAsset::register($this);
     $menuItems = [
         ['label' => \Yii::t('app','Домой'), 'url' => ['/site/index']],
         ['label' => 'О компании', 'url' => ['/site/about']],
-        ['label' => 'Контакты', 'url' => ['/site/contact']],
+ //       ['label' => 'Контакты', 'url' => ['/site/contact']],
 
             ['label' => 'Админка', 'url' => ['/admin']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
+        $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
@@ -62,7 +62,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
 
-    <div class="container">
+<!--    <div class="container-fluid">  -->
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
@@ -70,7 +70,8 @@ AppAsset::register($this);
         <?= $content ?>
 
 
-    </div>
+<!--    </div>  -->
+
 </div>
 <!--
 <footer class="footer">

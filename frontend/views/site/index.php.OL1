@@ -1,0 +1,101 @@
+<?php
+
+/* @var $this yii\web\View */
+/* @var $model \frontend\models\IndexForm */
+
+use yii\widgets\Pjax;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
+
+include 'kladr.php';
+
+$script = <<< JS
+jQuery(function($){
+   $("#date").mask("99/99/9999",{placeholder:"mm/dd/yyyy"});
+   $("#phone").mask("+7(999)999-99-99");
+   $("#kod").mask("9999");
+});
+$(document).ready(function(){
+    $("#myModal").click(function(){
+        $("#modal").modal('show');
+    });
+});
+$('#modal-btn').on('click', function() {
+        $('#openModal').modal('show')
+    });
+
+ymaps.ready(init);
+    var myMap;
+
+    function init(){     
+        myMap = new ymaps.Map("map", {
+            center: [54.71, 20.5],
+            zoom: 12,
+	    controls: ['zoomControl', 'searchControl']
+        });
+	//myMap.controls.add('zoomControl','searchControl');
+    };
+JS;
+//маркер конца строки, обязательно сразу, без пробелов и табуляции
+$this->registerJs($script, yii\web\View::POS_READY);
+
+$this->title = 'GoToWEB';
+?>
+
+<header class="header" data-stellar-background-ratio="0.5" id="home">
+	<div class="color-overlay">
+	                              
+	<div class="container">
+	    <div class="row hi-line">
+
+	        <a class="menu-country" href="#">Россия</a>
+	        <a class="menu-city" href="#">Калининград</a>
+
+
+	    </div>
+	    <div class="row">
+		<div class="intro">
+	    		<h1>GoTo WEB современный сервис перевозок :)</h1>
+		</div>
+		<div class="white-line"> </div>
+	    </div>
+	    <div class="row inputs-main main">
+	        <div class="col-md-5">
+	           <p>Откуда</p>
+		   <div class="col-md-8">
+		       <input type="text" name="street" class="form-control input-lg input-main" placeholder="Улица">
+		   </div>
+		   <div class="col-md-4">
+		       <input type="text" class="form-control input-lg input-main" placeholder="Дом">
+		   </div>
+
+		</div>
+	        <div class="col-md-2">
+	           
+		</div>
+	        <div class="col-md-5">
+	           <p>Куда</p>
+		   <input type="text" class="form-control input-lg input-main" placeholder="Большой">
+		</div>
+	    </div>
+	    <div class="row">
+		<div class="btn-main">	
+			<div class="buttons wow fadeInRight animated" data-wow-offset="10" data-wow-duration="1.5s">
+				<a href="#" class="btn btn-success btn-lg standard-button"><i class="icon-app-store"></i>Заказать такси</a>
+			</div>
+
+                </div>
+	    </div>
+
+
+	</div>
+
+	</div>
+</header>
+
+<section id="map-yandex">
+	<div id="map" style="width: 100%; height: 600px"></div>        
+</section>
+
+

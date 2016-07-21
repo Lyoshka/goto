@@ -9,25 +9,13 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 
-use dosamigos\google\maps\LatLng;
-use dosamigos\google\maps\services\DirectionsWayPoint;
-use dosamigos\google\maps\services\TravelMode;
-use dosamigos\google\maps\overlays\PolylineOptions;
-use dosamigos\google\maps\services\DirectionsRenderer;
-use dosamigos\google\maps\services\DirectionsService;
-use dosamigos\google\maps\overlays\InfoWindow;
-use dosamigos\google\maps\overlays\Marker;
-use dosamigos\google\maps\Map;
-use dosamigos\google\maps\services\DirectionsRequest;
-use dosamigos\google\maps\overlays\Polygon;
-use dosamigos\google\maps\layers\BicyclingLayer;
-
 $script = <<< JS
 jQuery(function($){
    $("#date").mask("99/99/9999",{placeholder:"mm/dd/yyyy"});
    $("#phone").mask("+7(999)999-99-99");
    $("#kod").mask("9999");
 });
+
 $(document).ready(function(){
     $("#myModal").click(function(){
         $("#modal").modal('show');
@@ -36,159 +24,166 @@ $(document).ready(function(){
 $('#modal-btn').on('click', function() {
         $('#openModal').modal('show')
     });
+
+
+window.initMap = function(){
+  var origin_place_id = null;
+  var destination_place_id = null;
+  var travel_mode = google.maps.TravelMode.WALKING;
+
+
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 54.71, lng: 20.51},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+
+  directionsDisplay.addListener('directions_changed', function() {
+    computeTotalDistance(directionsDisplay.getDirections());
+  });
+
+  directionsDisplay.setMap(map);
+
+  var origin_input = document.getElementById('start');
+  var destination_input = document.getElementById('end');
+
+  var origin_autocomplete = new google.maps.places.Autocomplete(origin_input);
+  origin_autocomplete.bindTo('bounds', map);
+  var destination_autocomplete =
+      new google.maps.places.Autocomplete(destination_input);
+  destination_autocomplete.bindTo('bounds', map);
+
+
+
+function expandViewportToFitPlace(map, place) {
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(17);
+    }
+  }
+
+  origin_autocomplete.addListener('place_changed', function() {
+    var place = origin_autocomplete.getPlace();
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+    expandViewportToFitPlace(map, place);
+
+    // If the place has a geometry, store its place ID and route if we have
+    // the other place ID
+    origin_place_id = place.place_id;
+    route(origin_place_id, destination_place_id, travel_mode,
+          directionsService, directionsDisplay);
+  });
+
+  destination_autocomplete.addListener('place_changed', function() {
+    var place = destination_autocomplete.getPlace();
+    if (!place.geometry) {
+      window.alert("Autocomplete's returned place contains no geometry");
+      return;
+    }
+    expandViewportToFitPlace(map, place);
+
+    // If the place has a geometry, store its place ID and route if we have
+    // the other place ID
+    destination_place_id = place.place_id;
+    route(origin_place_id, destination_place_id, travel_mode,
+          directionsService, directionsDisplay);
+  });
+
+  function route(origin_place_id, destination_place_id, travel_mode,
+                 directionsService, directionsDisplay) {
+    if (!origin_place_id || !destination_place_id) {
+      return;
+    }
+    directionsService.route({
+      origin: {'placeId': origin_place_id},
+      destination: {'placeId': destination_place_id},
+      travelMode: travel_mode
+    }, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
+  }
+
+function computeTotalDistance(result) {
+  var total = 0;
+  var myroute = result.routes[0];
+  for (var i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i].distance.value;
+  }
+  total = total / 1000;
+  document.getElementById('total').innerHTML = 'Дистанция: ' + total + ' km';
+}
+
+}
+
 JS;
 //маркер конца строки, обязательно сразу, без пробелов и табуляции
 $this->registerJs($script, yii\web\View::POS_READY);
 
-$this->title = 'GoToWEB';
-
-//$coord = new LatLng(['lat' => 54.709545, 'lng' => 20.510527]);
-$coord = new LatLng(['lat' => 39.720089311812094, 'lng' => 2.91165944519042]);
-$map = new Map([
-    'center' => $coord,
-    'zoom' => 12,
-]);
-
-// lets use the directions renderer
-$home = new LatLng(['lat' => 39.720991014764536, 'lng' => 2.911801719665541]);
-$school = new LatLng(['lat' => 39.719456079114956, 'lng' => 2.8979293346405166]);
-$santo_domingo = new LatLng(['lat' => 39.72118906848983, 'lng' => 2.907628202438368]);
- 
-// setup just one waypoint (Google allows a max of 8)
-$waypoints = [
-    new DirectionsWayPoint(['location' => $santo_domingo])
-];
- 
-$directionsRequest = new DirectionsRequest([
-    'origin' => $home,
-    'destination' => $school,
-    'waypoints' => $waypoints,
-    'travelMode' => TravelMode::DRIVING
-]);
- 
-// Lets configure the polyline that renders the direction
-$polylineOptions = new PolylineOptions([
-    'strokeColor' => '#FFAA00',
-    'draggable' => true
-]);
- 
-// Now the renderer
-$directionsRenderer = new DirectionsRenderer([
-    'map' => $map->getName(),
-    'polylineOptions' => $polylineOptions
-]);
- 
-// Finally the directions service
-$directionsService = new DirectionsService([
-    'directionsRenderer' => $directionsRenderer,
-    'directionsRequest' => $directionsRequest
-]);
- 
-// Thats it, append the resulting script to the map
-$map->appendScript($directionsService->getJs());
- 
-
+$this->title = 'GoTo WEB';
 ?>
 
-<div class="site-index">
+<header class="header" data-stellar-background-ratio="0.5" id="home">
+	<div class="color-overlay">
+	                              
+	<div class="container">
+	    <div class="row hi-line">
+
+	        <a class="menu-country" href="#">Россия</a>
+	        <a class="menu-city" href="#">Калининград</a>
+
+	    </div>
+	    <div class="row">
+			<div class="intro">
+	    		<h1>GoTo WEB - современный сервис перевозок :)</h1>
+			</div>
+			<div class="white-line"> </div>
+	    </div>
+	    <div class="row inputs-main main">
+	        <div class="col-md-5">
+	           <p>Откуда</p>
+		       <input type="text" id="start" name="street" class="form-control input-lg input-main" placeholder="Адрес">
+			</div>
+			
+	        <div class="col-md-2">
+	        </div>
+	        <div class="col-md-5">
+				<p>Куда</p>
+				<input type="text" id="end" class="form-control input-lg input-main" placeholder="Адрес">
+			</div>
+	    </div>
+		
+		<div class="row input-main">
+			     <span id="total"></span>
+		</div>
+		
+	    <div class="row">
+			<div class="btn-main">	
+				<div class="buttons wow fadeInRight animated" data-wow-offset="10" data-wow-duration="1.5s">
+					<a href="#" class="btn btn-success btn-lg standard-button"><i class="icon-app-store"></i>Заказать такси</a>
+				</div>
+
+            </div>
+	    </div>
 
 
-<div class="col-md-6 login-form">
+	   </div>
 
-    <?php    if (!Yii::$app->user->isGuest) { ?>
-
-    <h2><?php echo Yii::$app->user->identity->username; ?>  
-
-	<!-- <a href="#" ><img src="images/exit.png" width="20" title="Выход"> </a>   -->
-
-	  <?php echo Html::beginForm(['/site/logout'], 'post')
-            . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username  . ')',
-                ['class' => 'btn btn-link']
-            )
-            . Html::endForm()
-           ?>
-
-    </h2> 
-
-    <?php  }  ?>
-
-
-    <div class="row">
-            <?php $form = ActiveForm::begin(['id' => 'form-booking', 'options' => ['class' => 'form-2'] ]); ?>
-	        <h1><span class="sign-up">Заказать такси</span></h1>
-	            <span class="col-md-6">
-                	<?= $form->field($model, 'username')->textInput(['id' => 'from'])->label('Откуда') ?>
-                    </span>
-		    <span class="col-md-6">
-                	<?= $form->field($model, 'codeSMS')->textInput(['id' => 'to'])->label('Куда') ?>
-                    </span>
-
-
-
-
-                <div class="col-md-6">
-                	<?= $form->field($model, 'codeSMS') ->dropDownList(['1' => 'Эконом', '2' => 'Комфорт', '3' => 'Бизнес', ], [ 'prompt' => 'Выберите тариф', 'options' => [ '1' => ['Selected' => true] ] ])->label('Тариф') ?>
-                </div>
-
-                <div class="col-md-6">
-                	<?= $form->field($model, 'codeSMS')->textInput(['id' => 'to'])->label('Телефон') ?>
-                </div>
-		  <hr>
-  		  <p class="clearfix col-md-offset-4">
-       			 <input type="submit" name="Submit" value="Заказать такси">
-   		 </p>      
-
-            <?php ActiveForm::end(); ?>
-
-<!--
-            <?php $form = ActiveForm::begin(['id' => 'form-signup', 'options' => ['class' => 'form-2'] ]); ?>
-	        <h1><span class="log-in">Войти</span> или <span class="sign-up">зарегистрироваться</span></h1>
-
-                <?= $form->field($model, 'username')->textInput(['id' => 'phone'])->label('Телефон') ?>
-
-                <?= $form->field($model, 'codeSMS')->textInput(['id' => 'kod'])->label('КОД') ?>
-
-                <div class="form-group">
-                </div>
-  		  <p class="clearfix">
-			 <?= Html::a('Получить код по СМС',Url::toRoute(['index']),['class' => 'log-twitter']) ?>
-       			 <input type="submit" name="Submit" value="Войти">
-   		 </p>      
-
-            <?php ActiveForm::end(); ?>
-
--->
-
-        </div>
-
-
-  </div>
-
-  <div class="col-md-6">
-
-
-     <div id="googlemaps" style="width: 100%"><?php echo $map->display(); ?></div>        
-
-
-
-  </div>  
-
-
-    <div id="openModal" class="modalDialog">
-	<div>
-		<h2>Ваш код для входа</h2>
-		<Hr>
-
-   		<?php Pjax::begin(); ?>
-		    <?php if (!Yii::$app->user->isGuest) { ?>
-   			<h2><?php echo $model->codeSMS; ?></h2>
-		    <?php }  ?>
-   		<?php Pjax::end(); ?>
-
-		<Hr>
-		<p><a class="btn btn-lg btn-success close1" href="#">OK</a></p>
 	</div>
-    </div>
+</header>
 
-</div>
+<section id="map-container">
+	<div id="map" style="width: 100%; height: 600px"></div>        
+</section>
+
+

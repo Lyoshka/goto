@@ -1,10 +1,11 @@
 ymaps.ready(['DeliveryCalculator']).then(function init () {
-    var myMap = new ymaps.Map('map', {
+
+    var geolocation = ymaps.geolocation,
+     myMap = new ymaps.Map('map', {
             center: [54.70739, 20.507307],
             zoom: 9,
             type: 'yandex#map',
-            controls: ['zoomControl']
-        }),
+            controls: ['zoomControl']}),
         searchStartPoint = new ymaps.control.SearchControl({
             options: {
                 useMapBounds: true,
@@ -27,6 +28,38 @@ ymaps.ready(['DeliveryCalculator']).then(function init () {
             }
         }),
         calculator = new ymaps.DeliveryCalculator(myMap);
+
+
+
+
+// Сравним положение, вычисленное по ip пользователя и
+    // положение, вычисленное средствами браузера.
+    geolocation.get({
+        provider: 'yandex',
+        mapStateAutoApply: true
+    }).then(function (result) {
+        // Красным цветом пометим положение, вычисленное через ip.
+        result.geoObjects.options.set('preset', 'islands#redCircleIcon');
+        result.geoObjects.get(0).properties.set({
+            balloonContentBody: 'Мое местоположение'
+        });
+        myMap.geoObjects.add(result.geoObjects);
+    });
+
+    geolocation.get({
+        provider: 'browser',
+        mapStateAutoApply: true
+    }).then(function (result) {
+        // Синим цветом пометим положение, полученное через браузер.
+        // Если браузер не поддерживает эту функциональность, метка не будет добавлена на карту.
+        result.geoObjects.options.set('preset', 'islands#blueCircleIcon');
+        myMap.geoObjects.add(result.geoObjects);
+    });
+
+
+
+
+
 
     myMap.controls.add(searchStartPoint);
     myMap.controls.add(searchFinishPoint);
