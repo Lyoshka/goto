@@ -2,12 +2,15 @@
 
 /* @var $this yii\web\View */
 /* @var $model \frontend\models\IndexForm */
+/* @var $tarif \frontend\models\Tarif */
 
 use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+use yii\widgets\ActiveField;
+use yii\helpers\ArrayHelper;
+use frontend\models\Tarif;
 
 $script = <<< JS
 jQuery(function($){
@@ -116,13 +119,16 @@ function expandViewportToFitPlace(map, place) {
 
 function computeTotalDistance(result) {
   var total = 0;
+  var price = 0;
   var myroute = result.routes[0];
   for (var i = 0; i < myroute.legs.length; i++) {
     total += myroute.legs[i].distance.value;
   }
   total = total / 1000;
-  document.getElementById('total').innerHTML = 'Дистанция: ' + total + ' km';
-}
+  price = total * document.getElementById('indexform-codesms').value; 
+  document.getElementById('total').innerHTML = 'Дистанция: ' + total.toFixed(0) + ' km';
+  document.getElementById('price').innerHTML = 'Стоимость: ' + price.toFixed(0) + ' руб';
+  }
 
 }
 
@@ -143,12 +149,6 @@ $this->title = 'GoTo WEB';
 	        <a class="menu-city" href="#">Калининград</a>
 
 	    </div>
-	    <div class="row">
-			<div class="intro">
-	    		<h1>GoTo WEB - современный сервис перевозок :)</h1>
-			</div>
-			<div class="white-line"> </div>
-	    </div>
 	    <div class="row inputs-main main">
 	        <div class="col-md-5">
 	           <p>Откуда</p>
@@ -163,8 +163,20 @@ $this->title = 'GoTo WEB';
 			</div>
 	    </div>
 		
-		<div class="row input-main">
-			     <span id="total"></span>
+		<div class="row price-text">
+	        <div class="col-md-3">
+				<?php $form = ActiveForm::begin(); ?>
+				<?php $tarifs = Tarif::find()->all(); ?>
+				<?php $items = ArrayHelper::map($tarifs,'price','name');  ?>
+				<?php echo $form->field($model, 'codeSMS', ['enableLabel' => false] )->dropDownList($items); ?>
+				<?php ActiveForm::end(); ?>
+	        </div>
+	        <div class="col-md-4">
+	        </div>
+	        <div class="col-md-5">
+	        	<p id="total"></p>
+				<p id="price"></p>
+			</div>
 		</div>
 		
 	    <div class="row">

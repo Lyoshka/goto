@@ -36,7 +36,7 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => \Yii::t('app','Домой'), 'url' => ['/site/index']],
+        ['label' => \Yii::t('app','Главная'), 'url' => ['/site/index']],
         ['label' => 'О компании', 'url' => ['/site/about']],
  //       ['label' => 'Контакты', 'url' => ['/site/contact']],
 

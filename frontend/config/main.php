@@ -30,14 +30,21 @@ return [
             'errorAction' => 'site/error',
         ],
 
-        /*
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
+            'enablePrettyUrl' => false,
+            'showScriptName' => true,
         ],
-        */
+
     ],
+    
+    'bootstrap' => ['gii','debug'],
+    'modules' => [
+        	'gii' => [
+            	    'class' => 'yii\gii\Module',
+	    	    'allowedIPs' => ['78.25.122.62'],
+        	],
+    ],
+                                                                       
+
     'params' => $params,
 ];

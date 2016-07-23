@@ -354,7 +354,7 @@ header {
 }
 
 header .color-overlay {
-    min-height: 500px;
+    min-height: 400px;
 }
 .color-overlay {
     background: rgba(0, 0, 0, 0.4) none repeat scroll 0 0;
@@ -377,8 +377,7 @@ header .color-overlay {
 }
 .btn-main {
     text-align: center;
-    margin-top: 60px;
-    
+    margin-top: 10px;
 }
 
 .inputs-main {
@@ -424,4 +423,10 @@ header .color-overlay {
     margin-left: -5px;
     border-radius: 0 5px 5px 0;
     padding: 5px 10px;
+}
+
+.price-text {
+    text-align: center;
+    margin-top: 40px;
+    color: white;
 }

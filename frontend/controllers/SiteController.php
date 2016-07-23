@@ -13,6 +13,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\IndexForm;
 use frontend\models\ContactForm;
+use frontend\models\Tarif;
 
 /**
  * Site controller
@@ -86,6 +87,7 @@ class SiteController extends Controller
 
 
         $model = new IndexForm();
+	$tarif = new Tarif();
 
 
         if ($model->load(Yii::$app->request->post())) {
@@ -103,6 +105,7 @@ class SiteController extends Controller
 
         return $this->render('index', [
 	    'model' => $model,
+	    'terif' => $tarif,
         ]);
 
     }

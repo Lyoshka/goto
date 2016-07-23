@@ -9,11 +9,7 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-
-	'urlManager' => [
-            'showScriptName' => false,
-            'enablePrettyUrl' => true,
-        ],
+        
 
         'i18n' => [
             'translations' => [
@@ -47,17 +43,23 @@ return [
 
     ],
 
+
     'modules' => [
         'admin' => [
             'class' => 'mdm\admin\Module',
 	    'layout' => 'left-menu',
-        ]
+        ],
+        'debug' => [
+            'class' => 'yii\debug\Module',
+            'allowedIPs' => ['127.0.0.1', '::1', '89.110.62.*', '95.140.92.*', '78.25.122.62'],
+        ],
     ],
 
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
             'site/*',
+	    'gii/*',
             'admin/*',
             'some-controller/some-action',
             // The actions listed here will be allowed to everyone including guests.
