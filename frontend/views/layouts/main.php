@@ -36,12 +36,18 @@ AppAsset::register($this);
         ],
     ]);
     $menuItems = [
-        ['label' => \Yii::t('app','Главная'), 'url' => ['/site/index']],
-        ['label' => 'О компании', 'url' => ['/site/about']],
- //       ['label' => 'Контакты', 'url' => ['/site/contact']],
+        // ['label' => \Yii::t('app','Главная'), 'url' => ['/site/index']],
+        ['label' => 'Город', 'url' => ['#']],
+        ['label' => 'Личный кабинет', 'url' => ['#']],
+        ['label' => 'Заказ такси', 'url' => ['#']],
+        ['label' => 'Тарифы', 'url' => ['#']],
+        ['label' => 'Партнерам', 'url' => ['#']],
+        ['label' => 'Помощь', 'url' => ['#']],
 
             ['label' => 'Админка', 'url' => ['/admin']],
     ];
+
+
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
         $menuItems[] = ['label' => 'Вход', 'url' => ['/site/login']];
@@ -55,6 +61,8 @@ AppAsset::register($this);
             . Html::endForm()
             . '</li>';
     }
+
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,

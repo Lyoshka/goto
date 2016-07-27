@@ -13,6 +13,7 @@ class IndexForm extends Model
     public $username;
     public $password;
     public $codeSMS;
+    public $text;
 
     private $_user;
 
@@ -44,14 +45,14 @@ class IndexForm extends Model
     public function signup()
     {
         if (!$this->validate()) {
-            return null;
+            //return null;
         }
 
         if ($this->getUser() === null) {
 
-		$this->codeSMS = rand(1000,9999);
+			$this->codeSMS = rand(1000,9999);
 
-                Yii::$app->session->setFlash('error', 'SMS code: ' . $this->codeSMS);
+            Yii::$app->session->setFlash('error', 'SMS code: ' . $this->codeSMS);
         
             $user = new User();
             $user->username = $this->username;
@@ -59,20 +60,17 @@ class IndexForm extends Model
             $user->email = preg_replace("/[^0-9]/", '', $this->username);
             $user->setPassword($this->codeSMS);
             $user->generateAuthKey();
+            $user->text = $this->text;
         
             return $user->save() ? $user : null;
 
-	}  else {
-	
-	        if ($this->validate()) {
-        	    $this->_user = User::findByUsername($this->username);
-                    return $this->_user;
-
-       		  } else {
-	
-            	    return false;
-        	  }
-          }
+		}  else {
+			
+			$this->getUser();
+			//Yii::$app->session->setFlash('success', 'SMS code: ' . $this->codeSMS);
+	        $this->login();
+			
+        }
     }
 
 
@@ -109,7 +107,8 @@ class IndexForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+			return Yii::$app->user->login($this->getUser());
+            //return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         } else {
             return false;
         }
@@ -128,7 +127,6 @@ class IndexForm extends Model
 
         return $this->_user;
     }
-
 
 
 }

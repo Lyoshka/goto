@@ -87,12 +87,12 @@ class SiteController extends Controller
 
 
         $model = new IndexForm();
-	$tarif = new Tarif();
+		$tarif = new Tarif();
 
 
         if ($model->load(Yii::$app->request->post())) {
 
-        Yii::$app->session->setFlash('success', $model->codeSMS);
+        //Yii::$app->session->setFlash('success', $model->codeSMS);
 
             if ($user = $model->signup()) {
 

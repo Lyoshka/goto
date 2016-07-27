@@ -1,7 +1,7 @@
 html,
 body {
     height: 100%;
-    background-image: url('/images/bg1.jpg');
+    <!-- background-image: url('/images/bg1.jpg');     -->
     background-attachment: fixed;
 }
 
@@ -341,21 +341,19 @@ a.desc:after {
   position:absolute; 
   top: 0; 
   left: 0; 
-  margin-left: 50px;
+  margin-left: 50px;   
   z-index: 0; /* Set z-index to 0 as it will be on a layer below the contact form */
 }
  
 header {
-    background: url(../images/bg1.jpg) no-repeat center top fixed;
+    background: url(../images/bg1.jpg) no-repeat center top fixed;    
     padding-top: 50px;
+    min-height: 500px;
     -moz-background-size: 100%;
     -webkit-background-size: cover;
             background-size: cover;
 }
 
-header .color-overlay {
-    min-height: 400px;
-}
 .color-overlay {
     background: rgba(0, 0, 0, 0.4) none repeat scroll 0 0;
 }
@@ -429,4 +427,20 @@ header .color-overlay {
     text-align: center;
     margin-top: 40px;
     color: white;
+}
+
+.main-block {
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    max-width: 800px;
+    background-color: White;
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+    font-size: 14px;
+    border-radius: 10px;
+}
+
+.main {
+    padding: 20px;
+    opacity: 0.86;
 }
