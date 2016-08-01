@@ -87,12 +87,13 @@ class SiteController extends Controller
 
 
         $model = new IndexForm();
-		$tarif = new Tarif();
+	$tarif = new Tarif();
 
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ( $model->load(Yii::$app->request->post())) {
 
-        //Yii::$app->session->setFlash('success', $model->codeSMS);
+
+        //Yii::$app->session->setFlash('success', '11111111111111');
 
             if ($user = $model->signup()) {
 
@@ -106,9 +107,27 @@ class SiteController extends Controller
         return $this->render('index', [
 	    'model' => $model,
 	    'terif' => $tarif,
+            'user_id' => '00:00:00',
+
         ]);
 
     }
+
+
+
+    public function actionCheckUsername()
+    {
+
+        $model = new IndexForm();
+	$tarif = new Tarif();
+
+        return $this->render('index', [
+            'user_id' => $model['username'],
+	    'model' => $model,
+        ]);
+    }
+
+
 
     /**
      * Logs in a user.
@@ -243,13 +262,6 @@ class SiteController extends Controller
 
         return $this->render('resetPassword', [
             'model' => $model,
-        ]);
-    }
-
-    public function actionPjaxExample1()
-    {
-        return $this->render('index', [
-            'time' => date('H:i:s'),
         ]);
     }
 

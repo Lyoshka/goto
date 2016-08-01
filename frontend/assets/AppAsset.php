@@ -13,10 +13,14 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+	'css/demo.css',
+	'css/component.css',
     ];
     public $js = [
         'js/jquery.maskedinput.min.js',
+	'js/cbpFWTabs.js',
 	'https://maps.googleapis.com/maps/api/js?key=AIzaSyAr1rxZY8MquNLG9e7YgVokiQAF1x8TZEA&signed_in=true&libraries=places&callback=initMap',
+	'http://html5shiv.googlecode.com/svn/trunk/html5.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

@@ -25,26 +25,11 @@ $(document).ready(function(){
         $("#modal").modal('show');
     });
 });
+$('#modal-btn').on('click', function() {
+        $('#openModal').modal('show')
+    });
 
-//*******************************************************
-// Обработка нажатия на кнопку 'Вызов такси'
-//*******************************************************
-$('#send-button').click(function() {
-    //$('#openModal').modal('show');
 
-	if ( document.getElementById('phone').value == ""  ) {
-	     alert('Заполните номер телефона');
-	} else {
-	    document.getElementById('kod').style.display = "block";		
-	    document.getElementById('signup-button').style.display = "block";		
-	    document.getElementById('send-button').style.backgroundColor = "grey";
-	    document.getElementById('send-button').innerHTML = "Выслать СМС код";	    
-	}
-});
-
-//*******************************************************
-// Карта Google
-//*******************************************************
 window.initMap = function(){
   var origin_place_id = null;
   var destination_place_id = null;
@@ -180,8 +165,6 @@ function computeTotalDistance(result) {
 
 }
 
-new CBPFWTabs( document.getElementById( 'tabs' ) );
-
 JS;
 //маркер конца строки, обязательно сразу, без пробелов и табуляции
 $this->registerJs($script, yii\web\View::POS_READY);
@@ -189,85 +172,24 @@ $this->registerJs($script, yii\web\View::POS_READY);
 $this->title = 'GoTo WEB';
 ?>
 
+<header class="header" data-stellar-background-ratio="0.5" id="home">
+	<div class="color-overlay">
+	                              
+	   <div class="container main">
 
-	<div class="col-md-3">
-	                             
-		<div class="container-tab">
+		<?php JobWidget::begin(['model' => $model]); ?>
 
-			<div id="tabs" class="tabs">
-				<nav>
-					<ul>
-						<li><a href="#section-1"><span>Заказ такси</span></a></li>
-						<li><a href="#section-2"><span>Мои заказы</span></a></li>
-					</ul>
-				</nav>
-				<div class="content">
-					<section id="section-1">
-					        <?php 	$form = ActiveForm::begin( ); ?>
-						
-						<div class="row">
-							<input type="text" id="start" class="form-control" placeholder="Откуда">
-						</div>
-						<hr>
-						<div class="row">
-							<input type="text" id="end" class="form-control" placeholder="Куда">
-						</div>
-						<hr>
-						<?php echo $form->field($model, 'username', ['enableLabel' => false] )->textInput(array('placeholder'=>'Телефон', 'id'=>'phone'));  ?>
 
-						<?php  if (  Yii::$app->user->isGuest  ) { ?>
-						    <p><a href="#" class="btn btn-success" id="send-button">Вход</a> </p>
-                                                <?php } 	?>
+		<?php JobWidget::end(); ?>
 
-<?php Pjax::begin(); ?>
-    <?= Html::a(
-        'Обновить',
-        ['check-username'],
-        ['class' => 'btn btn-lg btn-primary']
-    ) ?>
-    <p>User: <?php echo $user_id ?></p>
-<?php Pjax::end(); ?>
-
-						<?php echo $form->field($model, 'codeSMS', ['enableLabel' => false] )->textInput(array('placeholder'=>'SMS код', 'id'=>'kod'));  ?>
-
-						<?= Html::submitButton('Заказать такси', ['class' => 'btn btn-success', 'id' => 'signup-button']) ?>
-		
-                                                <?php ActiveForm::end(); ?>
-
-					</section>
-					<section id="section-2">
-							<p>Вы не авторизованы</p>
-					</section>
-				</div>
-			</div>
-
-		</div>
-
-    <div id="openModal" class="modalDialog">
-	<div>
-		<h2>Ведите код для входа</h2>
-		<div class="row">
-			<h3></h3>
-		</div>
-		<Hr>
-		    <div class="row">
-   		<?php Pjax::begin(); ?>
-			<div class="col-md-6 col-md-offset-3">
-   				<input type="text" id="end" class="form-control" placeholder="КОД">
-			</div>
-   		<?php Pjax::end(); ?>
-		    </div>
-
-		<Hr>
-		<p><a class="btn btn-lg btn-success close1" href="#">Вход</a></p>
-	</div>
-    </div>
-
+	   </div>
 
 	</div>
+</header>
 
-	<div class="col-md-9 no-padd">
+<section id="map-container">
 
-	<div id="map1" style="width: 100%; height: 1000px"></div>        
 
-	</div>
+	<div id="map" style="width: 100%; height: 600px"></div>        
+
+</section>

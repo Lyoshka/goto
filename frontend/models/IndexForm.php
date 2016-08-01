@@ -48,9 +48,10 @@ class IndexForm extends Model
             //return null;
         }
 
+
         if ($this->getUser() === null) {
 
-			$this->codeSMS = rand(1000,9999);
+  	    $this->codeSMS = rand(1000,9999);
 
             Yii::$app->session->setFlash('error', 'SMS code: ' . $this->codeSMS);
         
@@ -68,7 +69,7 @@ class IndexForm extends Model
 			
 			$this->getUser();
 			//Yii::$app->session->setFlash('success', 'SMS code: ' . $this->codeSMS);
-	        $this->login();
+		        $this->login();
 			
         }
     }

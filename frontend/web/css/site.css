@@ -431,7 +431,7 @@ header {
 
 .main-block {
     margin: 0 auto;
-    text-align: center;
+    text-align: ,center;
     padding: 20px;
     max-width: 800px;
     background-color: White;
@@ -443,4 +443,20 @@ header {
 .main {
     padding: 20px;
     opacity: 0.86;
+    position: relative;
+
+}
+
+#kod, #signup-button {
+	display: none;
+	width: 150px;
+}
+
+#send-button {
+	width: 150px;
+
+}
+
+.alert-success {
+	margin-top: 50px;
 }
